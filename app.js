@@ -26,7 +26,7 @@ app.get('/campgrounds', (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            res.render('index', {
+            res.render('campgrounds/index', {
                 campgrounds: campgrounds
             });
         }
@@ -35,7 +35,7 @@ app.get('/campgrounds', (req, res) => {
 
 //NEW - show form to create new campground
 app.get('/campgrounds/new', (req, res) => {
-    res.render('new');
+    res.render('campgrounds/new');
 });
 
 //SHOW route - show information on one particular campground.
@@ -44,8 +44,7 @@ app.get('/campgrounds/:id', (req, res) => {
         if(err) {
             console.log(err);
         } else {
-            console.log(foundCampground);
-            res.render('show', {
+            res.render('campgrounds/show', {
                 campground: foundCampground
             });
         }
@@ -72,6 +71,41 @@ app.post('/campgrounds', (req, res) => {
             };
         }
     );
+});
+
+// ======================================================
+// COMMENTS ROUTES
+
+//New comment route
+app.get('/campgrounds/:id/comments/new', (req, res) => {
+    Campground.findById(req.params.id, (err, foundCampground) => {
+        if(err) {
+            console.log(err)
+        } else {
+            res.render('comments/new', {
+                campground: foundCampground
+            });
+        }
+    });
+});
+
+app.post('/campgrounds/:id/comments', (req, res) => {
+    //lookup campground using ID
+    Campground.findById(req.params.id, (err, campground) => {
+        if(err) {
+            console.log(err)
+            res.redirect('/campgrounds')
+        } else {
+            Comment.create({
+                text: req.body.comment.content, 
+                author: req.body.comment.author
+            }, (err, comment) => {
+                campground.comments.push(comment);
+                campground.save();
+                res.redirect(`/campgrounds/${campground._id}`);
+            });
+        }
+    });
 });
 
 app.listen(3000, () => {
