@@ -1,6 +1,8 @@
 const express = require('express'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
+      passport = require('passport'),
+      LocalStrategy = require('passport-local'),
       Campground = require('./models/campground'),
       Comment = require('./models/comment'),
       User = require('./models/user'),
@@ -8,14 +10,18 @@ const express = require('express'),
       app = express();
 
 mongoose.connect('mongodb://localhost/yelp_camp');
-
 app.use(bodyParser.urlencoded({extended: true}));
-
 app.set('view engine', 'ejs');
-
 app.use(express.static(__dirname + '/public'));
 
 seedDB();
+
+//PASSPORT CONFIGURATION
+app.use(require('express-session')({
+    secret: "Dingalshgawoeijrsldkgjhs;dlafkjsdf",
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.get('/', (req, res) => {
     res.render('landing');
@@ -39,6 +45,11 @@ app.get('/campgrounds', (req, res) => {
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
 });
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser);
+passport.deserializeUser(User.deserializeUser);
 
 //SHOW route - show information on one particular campground.
 app.get('/campgrounds/:id', (req, res) => {
@@ -107,6 +118,30 @@ app.post('/campgrounds/:id/comments', (req, res) => {
                 res.redirect(`/campgrounds/${campground._id}`);
             });
         }
+    });
+});
+
+//===============
+//AUTH ROUTES
+//===============
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+//handle signup logic
+app.post('/register', (req, res) => {
+    // const newUser = new User({username: req.body.username});
+    User.register(new User({username: req.body.username}), req.body.password, (err, user) => {
+        if(err) {
+            console.log(err);
+            return res.render('register');
+        }
+        console.log('No error')
+        //Site hangs at this point. FIND OUT WHYYY!!!
+        passport.authenticate('local')(req, res, function(){
+            console.log('Made it!')
+            res.redirect('/campgrounds');
+        });
     });
 });
 
