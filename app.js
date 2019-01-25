@@ -30,6 +30,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
+    next();
+});
+
 //Flash configuration
 // app.configure(function() {
 //     app.use(express.cookieParser('keyboard cat'));
@@ -43,13 +48,15 @@ app.get('/', (req, res) => {
 
 //INDEX route - show all campgrounds
 app.get('/campgrounds', (req, res) => {
+    console.log(req.user)
     //Get all campgrounds
     Campground.find({}, (err, campgrounds) => {
         if(err) {
             console.log(err);
         } else {
             res.render('campgrounds/index', {
-                campgrounds: campgrounds
+                campgrounds: campgrounds,
+                currentUser: req.user
             });
         }
     })
