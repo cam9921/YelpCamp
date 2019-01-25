@@ -1,5 +1,10 @@
+const express = require('express')
+const router = express.Router();
+const Campground = require('../models/campground');
+const Comment = require('../models/comment');
+
 //INDEX route - show all campgrounds
-app.get('/campgrounds', (req, res) => {
+router.get('/campgrounds', (req, res) => {
     console.log(req.user)
     //Get all campgrounds
     Campground.find({}, (err, campgrounds) => {
@@ -15,13 +20,13 @@ app.get('/campgrounds', (req, res) => {
 });
 
 //NEW - show form to create new campground
-app.get('/campgrounds/new', (req, res) => {
+router.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
 });
 
 
 //SHOW route - show information on one particular campground.
-app.get('/campgrounds/:id', (req, res) => {
+router.get('/campgrounds/:id', (req, res) => {
     Campground.findById(req.params.id).populate('comments').exec((err, foundCampground) => {
         if(err) {
             console.log(err);
@@ -34,7 +39,7 @@ app.get('/campgrounds/:id', (req, res) => {
 });
 
 //CREATE route - add new campground to database
-app.post('/campgrounds', (req, res) => {
+router.post('/campgrounds', (req, res) => {
     const name = req.body.name;
     const imageURL = req.body.imageURL;
     const description = req.body.description;
@@ -54,3 +59,12 @@ app.post('/campgrounds', (req, res) => {
         }
     );
 });
+
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next(); 
+    }
+    res.redirect('/login')
+}
+
+module.exports = router;

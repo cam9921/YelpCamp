@@ -1,8 +1,13 @@
+const express = require('express')
+const router = express.Router();
+const Campground = require('../models/campground');
+const Comment = require('../models/comment');
+
 // ======================================================
 // COMMENTS ROUTES
 
 //New comment route
-app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
+router.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
     Campground.findById(req.params.id, (err, foundCampground) => {
         if(err) {
             console.log(err)
@@ -14,7 +19,7 @@ app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
     });
 });
 
-app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
+router.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
     //lookup campground using ID
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
@@ -32,3 +37,12 @@ app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
         }
     });
 });
+
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next(); 
+    }
+    res.redirect('/login')
+}
+
+module.exports = router;

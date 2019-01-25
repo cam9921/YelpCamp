@@ -1,14 +1,22 @@
+//External dependencies
 const express = require('express'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
       passport = require('passport'),
       flash = require('connect-flash'),
-      LocalStrategy = require('passport-local'),
-      Campground = require('./models/campground'),
+      LocalStrategy = require('passport-local');
+
+//Local dependencies
+const Campground = require('./models/campground'),
       Comment = require('./models/comment'),
       User = require('./models/user'),
+      authRoutes = require('./routes/index'),
+      commentRoutes = require('./routes/comments'),
+      campgroundRoutes = require('./routes/campgrounds'),
       seedDB = require('./seeds');
-      app = express();
+
+//Init app
+const app = express();
 
 mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -35,19 +43,16 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(authRoutes);
+app.use(commentRoutes);
+app.use(campgroundRoutes);
+
 //Flash configuration
 // app.configure(function() {
 //     app.use(express.cookieParser('keyboard cat'));
 //     app.use(express.session({ cookie: { maxAge: 60000 }}));
 //     app.use(flash());
 // });
-
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next(); 
-    }
-    res.redirect('/login')
-}
 
 app.listen(3000, () => {
     console.log('Server Started on port 3000');
