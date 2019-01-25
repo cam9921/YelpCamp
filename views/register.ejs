@@ -1,7 +1,11 @@
-<h1>Sign Up!</h1>
+<% include ./partials/header %>
 
-<form action='/register' method='POST'>
-    <input type='text' name='username' placeholder='username'>
-    <input type='text' name='password' placeholder='password'>
-    <button>Submit</button>
-</form>
+    <h1>Sign Up!</h1>
+
+    <form action='/register' method='POST'>
+        <input type='text' name='username' placeholder='username'>
+        <input type='text' name='password' placeholder='password'>
+        <button>Submit</button>
+    </form>
+
+<% include ./partials/footer %>

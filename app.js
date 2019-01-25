@@ -100,7 +100,7 @@ app.post('/campgrounds', (req, res) => {
 // COMMENTS ROUTES
 
 //New comment route
-app.get('/campgrounds/:id/comments/new', (req, res) => {
+app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
     Campground.findById(req.params.id, (err, foundCampground) => {
         if(err) {
             console.log(err)
@@ -112,7 +112,7 @@ app.get('/campgrounds/:id/comments/new', (req, res) => {
     });
 });
 
-app.post('/campgrounds/:id/comments', (req, res) => {
+app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
     //lookup campground using ID
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
@@ -162,6 +162,19 @@ app.post('/login', passport.authenticate('local',
     successRedirect: "/campgrounds",
     failureRedirect: '/login'
 }));
+
+//Logout routes
+app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/')
+});
+
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next(); 
+    }
+    res.redirect('/login')
+}
 
 app.listen(3000, () => {
     console.log('Server Started on port 3000');
