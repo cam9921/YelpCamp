@@ -2,6 +2,7 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       mongoose = require('mongoose'),
       passport = require('passport'),
+      flash = require('connect-flash'),
       LocalStrategy = require('passport-local'),
       Campground = require('./models/campground'),
       Comment = require('./models/comment'),
@@ -22,6 +23,19 @@ app.use(require('express-session')({
     resave: false,
     saveUninitialized: false
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//Flash configuration
+// app.configure(function() {
+//     app.use(express.cookieParser('keyboard cat'));
+//     app.use(express.session({ cookie: { maxAge: 60000 }}));
+//     app.use(flash());
+// });
 
 app.get('/', (req, res) => {
     res.render('landing');
@@ -45,11 +59,7 @@ app.get('/campgrounds', (req, res) => {
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
 });
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser);
-passport.deserializeUser(User.deserializeUser);
+
 
 //SHOW route - show information on one particular campground.
 app.get('/campgrounds/:id', (req, res) => {
@@ -130,20 +140,28 @@ app.get('/register', (req, res) => {
 
 //handle signup logic
 app.post('/register', (req, res) => {
-    // const newUser = new User({username: req.body.username});
     User.register(new User({username: req.body.username}), req.body.password, (err, user) => {
         if(err) {
             console.log(err);
             return res.render('register');
         }
-        console.log('No error')
-        //Site hangs at this point. FIND OUT WHYYY!!!
-        passport.authenticate('local')(req, res, function(){
-            console.log('Made it!')
+        passport.authenticate('local')(req, res, () => {
             res.redirect('/campgrounds');
         });
     });
 });
+
+//Show Login form
+app.get('/login', (req, res) => {
+    res.render('login')
+});
+
+//handle login logic
+app.post('/login', passport.authenticate('local', 
+{
+    successRedirect: "/campgrounds",
+    failureRedirect: '/login'
+}));
 
 app.listen(3000, () => {
     console.log('Server Started on port 3000');
