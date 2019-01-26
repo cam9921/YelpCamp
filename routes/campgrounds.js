@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 });
 
 //NEW - show form to create new campground
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 });
 
@@ -38,7 +38,7 @@ router.get('/:id', (req, res) => {
 });
 
 //CREATE route - add new campground to database
-router.post('/', (req, res) => {
+router.post('/', isLoggedIn, (req, res) => {
     const name = req.body.name;
     const imageURL = req.body.imageURL;
     const description = req.body.description;

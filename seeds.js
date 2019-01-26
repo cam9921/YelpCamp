@@ -48,28 +48,28 @@ function seedDB() {
             }
             console.log('Removed comments!');
             //Seed new data
-            data.forEach((seed) => {
-                Campground.create(seed, (err, campground) => {
-                    if(err) {
-                        console.log(err);
-                    } else {
-                        console.log('Added a campground');
-                        //Create a comment
-                        Comment.create({
-                                    text: 'Feckin love this place', 
-                                    author: 'Me'
-                                }, (err, comment) => {
-                                    if(err) {
-                                        console.log(err)
-                                    } else {
-                                        campground.comments.push(comment);
-                                        campground.save();  
-                                        console.log('Created new comments')
-                                    }
-                                });
-                    }
-                });
-            });  
+            // data.forEach((seed) => {
+            //     Campground.create(seed, (err, campground) => {
+            //         if(err) {
+            //             console.log(err);
+            //         } else {
+            //             console.log('Added a campground');
+            //             //Create a comment
+            //             Comment.create({
+            //                         text: 'Feckin love this place', 
+            //                         author: 'Me'
+            //                     }, (err, comment) => {
+            //                         if(err) {
+            //                             console.log(err)
+            //                         } else {
+            //                             campground.comments.push(comment);
+            //                             campground.save();  
+            //                             console.log('Created new comments')
+            //                         }
+            //                     });
+            //         }
+            //     });
+            // });  
         });
     });
 };
