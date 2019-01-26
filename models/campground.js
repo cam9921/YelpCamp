@@ -21,9 +21,10 @@ const campgroundSchema = new mongoose.Schema({
     ]
 });
 
+//Pre-hook to delete associated comments when a campground is deleted. 
 campgroundSchema.pre('remove', async function() {
     console.log('async function called')
-    await Comment.remove({
+    await Comment.deleteMany({
         _id: {
             $in: this.comments
         }
