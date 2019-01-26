@@ -3,10 +3,12 @@ const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
 
+//Landing page
 router.get('/', (req, res) => {
     res.render('landing');
 });
 
+//Register route
 router.get('/register', (req, res) => {
     res.render('register');
 });

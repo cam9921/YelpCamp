@@ -44,8 +44,8 @@ app.use((req, res, next) => {
 });
 
 app.use(authRoutes);
-app.use(commentRoutes);
-app.use(campgroundRoutes);
+app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/campgrounds', campgroundRoutes);
 
 //Flash configuration
 // app.configure(function() {
