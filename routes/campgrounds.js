@@ -63,10 +63,14 @@ router.put('/:id', (req, res) => {
 
 //DESTROY campground route
 router.delete('/:id', (req, res) => {
-    Campground.findByIdAndDelete(req.params.id, req.body.campground, (err, deletedCampground) => {
+    Campground.findById(req.params.id, req.body.campground, (err, foundCampground) => {
         if(err) {
+            console.log(err)
             res.redirect('/campgrounds');
         } else {
+            //Comments will be dropped in async await function
+            //defined in the campground model
+            foundCampground.remove();
             res.redirect('/campgrounds');
         }
     });

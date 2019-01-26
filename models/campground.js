@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Comment = require('./comment');
 
 //Set up our Schema
 const campgroundSchema = new mongoose.Schema({
@@ -18,6 +19,15 @@ const campgroundSchema = new mongoose.Schema({
             ref: "Comment"
         }
     ]
+});
+
+campgroundSchema.pre('remove', async function() {
+    console.log('async function called')
+    await Comment.remove({
+        _id: {
+            $in: this.comments
+        }
+    });
 });
 
 const Campground = mongoose.model('Campground', campgroundSchema);
