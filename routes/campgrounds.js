@@ -37,6 +37,41 @@ router.get('/:id', (req, res) => {
     });
 });
 
+//EDIT CAMPGROUND ROUTE
+router.get('/:id/edit', (req, res) => {
+    Campground.findById(req.params.id, (err, foundCampground) => {
+        if(err) {
+            res.redirect('/campgrounds');
+        } else {
+            res.render('campgrounds/edit', {
+                campground: foundCampground
+            });
+        }
+    });
+});
+
+//UPDATE CAMPGROUND ROUTE
+router.put('/:id', (req, res) => {
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
+        if(err) {
+            res.redirect('/campgrounds')
+        } else {
+            res.redirect(`/campgrounds/${updatedCampground._id}`)
+        }
+    });
+})
+
+//DESTROY campground route
+router.delete('/:id', (req, res) => {
+    Campground.findByIdAndDelete(req.params.id, req.body.campground, (err, deletedCampground) => {
+        if(err) {
+            res.redirect('/campgrounds');
+        } else {
+            res.redirect('/campgrounds');
+        }
+    });
+});
+
 //CREATE route - add new campground to database
 router.post('/', isLoggedIn, (req, res) => {
     const name = req.body.name;

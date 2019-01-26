@@ -4,7 +4,8 @@ const express = require('express'),
       mongoose = require('mongoose'),
       passport = require('passport'),
       flash = require('connect-flash'),
-      LocalStrategy = require('passport-local');
+      LocalStrategy = require('passport-local'), 
+      methodOverride = require('method-override');
 
 //Local dependencies
 const Campground = require('./models/campground'),
@@ -22,6 +23,7 @@ mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
+app.use(methodOverride('_method'));
 
 //To seed DB if needed.
 // seedDB();
