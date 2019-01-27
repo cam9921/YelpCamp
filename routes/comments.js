@@ -33,17 +33,65 @@ router.post('/', isLoggedIn, (req, res) => {
                 //add username and id to comment
                 comment.author.id = req.user._id;
                 comment.author.username = req.user.username;
-                console.log(`New comment from ${req.user.username}`);
                 comment.save();
                 //save comment
                 campground.comments.push(comment);
                 campground.save();
-                console.log(comment)
                 res.redirect(`/campgrounds/${campground._id}`);
             });
         }
     });
 });
+
+//Comments edit route
+router.get('/:comment_id/edit', checkCommentOwnership, (req, res) => {
+    Comment.findById(req.params.comment_id, (err, foundComment) => {
+        res.render('comments/edit', {
+            campground_id: req.params.id, 
+            comment: foundComment
+        });
+    });
+});
+
+//Comments update route
+router.put('/:comment_id', checkCommentOwnership, (req, res) => {
+    Comment.findOneAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment) => {
+        if(err) {
+            res.redirect(`back`)
+        } else {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        }
+    })
+});
+
+//Comments destroy route
+router.delete('/:comment_id', checkCommentOwnership, (req, res) => {
+    Comment.findByIdAndRemove(req.params.comment_id, (err) => {
+        if(err) {
+            res.redirect('back');
+        } else {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        }
+    });
+});
+
+function checkCommentOwnership(req, res, next) {
+    if(req.isAuthenticated()) {
+        Comment.findById(req.params.comment_id, (err, foundComment) => {
+            if(err) {
+                res.redirect('/campgrounds');
+            } else {
+                if(foundComment.author.id.equals(req.user._id)) {
+                    next();
+                } else {
+                    res.redirect('back');
+                }
+            }
+        });
+    } else {
+        res.redirect('back');
+    }
+};
 
 function isLoggedIn(req, res, next) {
     if(req.isAuthenticated()) {

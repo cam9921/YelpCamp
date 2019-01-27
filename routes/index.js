@@ -28,15 +28,23 @@ router.post('/register', (req, res) => {
 
 //Show Login form
 router.get('/login', (req, res) => {
-    res.render('login')
+    res.render('login', {
+        referer: req.headers.referer
+    })
 });
 
 //handle login logic
 router.post('/login', passport.authenticate('local', 
 {
-    successRedirect: "/campgrounds",
     failureRedirect: '/login'
-}));
+}), (req, res) => {
+    console.log(req);
+    if(req.body.referer && req.body.referer !== undefined) {
+        res.redirect(req.body.referer);
+    } else {
+        res.redirect('/campgrounds')
+    }
+});
 
 //Logout routes
 router.get('/logout', (req, res) => {

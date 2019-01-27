@@ -64,9 +64,6 @@ router.delete('/:id', checkCampgroundOwnership, (req, res) => {
             console.log(err)
             res.redirect('/campgrounds');
         } else {
-            //Comments will be dropped in async await function
-            //defined in the campground model
-            console.log(foundCampground);
             foundCampground.remove();
             res.redirect('/campgrounds');
         }
@@ -94,7 +91,6 @@ router.post('/', isLoggedIn, (req, res) => {
             if(err) {
                 console.log(err)
             } else {
-                console.log(`Created Campground ${campground}`)
                 res.redirect('/campgrounds');
             };
         }
