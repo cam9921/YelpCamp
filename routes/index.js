@@ -29,7 +29,8 @@ router.post('/register', (req, res) => {
 //Show Login form
 router.get('/login', (req, res) => {
     res.render('login', {
-        referer: req.headers.referer
+        referer: req.headers.referer, 
+        message: req.flash('error')
     })
 });
 
@@ -50,12 +51,5 @@ router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/campgrounds')
 });
-
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next(); 
-    }
-    res.redirect('/login')
-}
 
 module.exports = router;

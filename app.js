@@ -40,6 +40,8 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+app.use(flash());
+
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
@@ -50,12 +52,6 @@ app.use(authRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
 app.use('/campgrounds', campgroundRoutes);
 
-//Flash configuration
-// app.configure(function() {
-//     app.use(express.cookieParser('keyboard cat'));
-//     app.use(express.session({ cookie: { maxAge: 60000 }}));
-//     app.use(flash());
-// });
 
 app.listen(3000, () => {
     console.log('Server Started on port 3000');
