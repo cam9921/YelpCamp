@@ -29,8 +29,7 @@ router.post('/register', (req, res) => {
 //Show Login form
 router.get('/login', (req, res) => {
     res.render('login', {
-        referer: req.headers.referer, 
-        message: req.flash('error')
+        referer: req.headers.referer
     })
 });
 
@@ -49,6 +48,7 @@ router.post('/login', passport.authenticate('local',
 //Logout routes
 router.get('/logout', (req, res) => {
     req.logout();
+    req.flash('success', 'Logged you out!')
     res.redirect('/campgrounds')
 });
 
