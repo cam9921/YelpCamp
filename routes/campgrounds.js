@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const Campground = require('../models/campground');
 const Comment = require('../models/comment');
+const middleware = require('../middleware/index');
 
 //INDEX route - show all campgrounds
 router.get('/', (req, res) => {
@@ -19,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 //NEW - show form to create new campground
-router.get('/new', isLoggedIn, (req, res) => {
+router.get('/new', middleware.isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 });
 
@@ -38,7 +39,7 @@ router.get('/:id', (req, res) => {
 });
 
 //EDIT CAMPGROUND ROUTE
-router.get('/:id/edit', checkCampgroundOwnership, (req, res) => {
+router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
     Campground.findById(req.params.id, (err, foundCampground) => {
         res.render('campgrounds/edit', {
             campground: foundCampground
@@ -47,7 +48,7 @@ router.get('/:id/edit', checkCampgroundOwnership, (req, res) => {
 });
 
 //UPDATE CAMPGROUND ROUTE
-router.put('/:id', checkCampgroundOwnership, (req, res) => {
+router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     Campground.findOneAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
         if(err) {
             res.redirect('/campgrounds')
@@ -58,7 +59,7 @@ router.put('/:id', checkCampgroundOwnership, (req, res) => {
 })
 
 //DESTROY campground route
-router.delete('/:id', checkCampgroundOwnership, (req, res) => {
+router.delete('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     Campground.findById(req.params.id, req.body.campground, (err, foundCampground) => {
         if(err) {
             console.log(err)
@@ -71,7 +72,7 @@ router.delete('/:id', checkCampgroundOwnership, (req, res) => {
 });
 
 //CREATE route - add new campground to database
-router.post('/', isLoggedIn, (req, res) => {
+router.post('/', middleware.isLoggedIn, (req, res) => {
     const name = req.body.name;
     const imageURL = req.body.imageURL;
     const description = req.body.description;
@@ -96,30 +97,5 @@ router.post('/', isLoggedIn, (req, res) => {
         }
     );
 });
-
-function checkCampgroundOwnership(req, res, next) {
-    if(req.isAuthenticated()) {
-        Campground.findById(req.params.id, (err, foundCampground) => {
-            if(err) {
-                res.redirect('/campgrounds');
-            } else {
-                if(foundCampground.author.id.equals(req.user._id)) {
-                    next();
-                } else {
-                    res.redirect('back');
-                }
-            }
-        });
-    } else {
-        res.redirect('back');
-    }
-};
-
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next(); 
-    }
-    res.redirect('/login')
-}
 
 module.exports = router;

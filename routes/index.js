@@ -38,7 +38,6 @@ router.post('/login', passport.authenticate('local',
 {
     failureRedirect: '/login'
 }), (req, res) => {
-    console.log(req);
     if(req.body.referer && req.body.referer !== undefined) {
         res.redirect(req.body.referer);
     } else {
