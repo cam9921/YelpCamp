@@ -20,7 +20,6 @@ router.get('/new', middleware.isLoggedIn, (req, res) => {
 
 //CREATE comment route
 router.post('/', middleware.isLoggedIn, (req, res) => {
-    //lookup campground using ID
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
             console.log(err)
@@ -30,11 +29,9 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
                 text: req.body.comment.content, 
                 author: req.body.comment.author
             }, (err, comment) => {
-                //add username and id to comment
                 comment.author.id = req.user._id;
                 comment.author.username = req.user.username;
                 comment.save();
-                //save comment
                 campground.comments.push(comment);
                 campground.save();
                 res.redirect(`/campgrounds/${campground._id}`);
