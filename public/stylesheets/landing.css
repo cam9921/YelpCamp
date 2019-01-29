@@ -1,0 +1,82 @@
+body {
+    background-color: #000;
+}
+
+#landing-header {
+    z-index: 1;
+    position: relative;
+    text-align: center;
+    padding-top: 40vh;
+}
+
+#landing-header h1 {
+    color: #fff;
+}
+
+.slideshow { 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.slideshow li { 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    opacity: 0;
+    z-index: 0;
+    animation: imageAnimation 50s linear infinite; 
+}
+
+.slideshow li:nth-child(1) { 
+    background-image: url(https://www.troma.com/wp-content/uploads/2016/11/rednecksstill2.jpg) 
+}
+.slideshow li:nth-child(2) { 
+    background-image: url(https://i2.wp.com/wellalldieasmarines.net/wp-content/uploads/2017/09/rednecks-with-guns.jpg?resize=672%2C372);
+    animation-delay: 10s; 
+}
+.slideshow li:nth-child(3) { 
+    background-image: url(http://farm1.static.flickr.com/21/25799518_9435b9104b.jpg);
+    animation-delay: 20s; 
+}
+.slideshow li:nth-child(4) { 
+    background-image: url(https://lh5.googleusercontent.com/7Okj7HkT0ZXpVNciBN1dOqEcUulPHq3DK9HfcH2yFnnV0qyHFpoZ3pL0ScGljrwmdXJYGODQ3GGq7AU9n6zeyLH_ZWkvwTaUI-qjpgBtwfhDey3BVvDUD7OPNw);
+    animation-delay: 30s; 
+}
+.slideshow li:nth-child(5) { 
+    background-image: url(https://static.fjcdn.com/pictures/Rednecks_e503a8_679125.png);
+    animation-delay: 40s; 
+}
+
+@keyframes imageAnimation { 
+    0% { 
+      opacity: 0; 
+      animation-timing-function: ease-in;
+    }
+    10% {
+      opacity: 1;
+      animation-timing-function: ease-out;
+    }
+    20% {
+      opacity: 1
+    }
+    30% {
+      opacity: 0
+    }
+}
+
+/* Older browser support - .no-cssanimations class added by modernizr */
+.no-cssanimations .slideshow li {
+	opacity: 1;
+}
