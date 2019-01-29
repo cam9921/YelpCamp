@@ -74,6 +74,7 @@ router.delete('/:id', middleware.checkCampgroundOwnership, (req, res) => {
 //CREATE route - add new campground to database
 router.post('/', middleware.isLoggedIn, (req, res) => {
     const name = req.body.name;
+    const price = req.body.price;
     const imageURL = req.body.imageURL;
     const description = req.body.description;
     const author = {
@@ -83,6 +84,7 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
 
     const newCampground = {
         name: name, 
+        price: price,
         imageURL: imageURL,
         description: description,
         author: author
