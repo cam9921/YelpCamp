@@ -17,10 +17,11 @@ router.get('/register', (req, res) => {
 router.post('/register', (req, res) => {
     User.register(new User({username: req.body.username}), req.body.password, (err, user) => {
         if(err) {
-            console.log(err);
+            req.flash('error', `${err.name}: ${err.message}`);
             return res.render('register');
         }
         passport.authenticate('local')(req, res, () => {
+            req.flash('success', `Welcome to Y'allp Camp, ${user.username}!`)
             res.redirect('/campgrounds');
         });
     });

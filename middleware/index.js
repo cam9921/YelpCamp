@@ -6,16 +6,19 @@ const middlewareObj = {
         if(req.isAuthenticated()) {
             Campground.findById(req.params.id, (err, foundCampground) => {
                 if(err) {
+                    req.flash('error', 'Campground not found.');
                     res.redirect('/campgrounds');
                 } else {
                     if(foundCampground.author.id.equals(req.user._id)) {
                         next();
                     } else {
+                        req.flash('error', 'Permission deined. You are not the owner of this campground.');
                         res.redirect('back');
                     }
                 }
             });
         } else {
+            req.flash('error', 'You need to be logged in to do that!')
             res.redirect('back');
         }
     },
@@ -29,11 +32,13 @@ const middlewareObj = {
                     if(foundComment.author.id.equals(req.user._id)) {
                         next();
                     } else {
+                        req.flash('error', 'Access Denied. You are not the owner of this comment.');
                         res.redirect('back');
                     }
                 }
             });
         } else {
+            req.flash('error', 'You need to be logged in to do that!');
             res.redirect('back');
         }
     }, 
@@ -42,7 +47,7 @@ const middlewareObj = {
         if(req.isAuthenticated()) {
             return next(); 
         }
-        req.flash("error", "Please login first!")
+        req.flash("error", "You need to be logged in to do that!")
         res.redirect('/login');
     }
 };
