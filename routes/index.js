@@ -10,15 +10,15 @@ router.get('/', (req, res) => {
 
 //Register route
 router.get('/register', (req, res) => {
-    res.render('register');
+    res.render('register', {page: 'register'});
 });
 
 //handle signup logic
 router.post('/register', (req, res) => {
     User.register(new User({username: req.body.username}), req.body.password, (err, user) => {
         if(err) {
-            req.flash('error', `${err.name}: ${err.message}`);
-            return res.render('register');
+            // req.flash('error', `${err.name}: ${err.message}`);
+            return res.render('register', {error: err.message});
         }
         passport.authenticate('local')(req, res, () => {
             req.flash('success', `Welcome to Y'allp Camp, ${user.username}!`)
@@ -30,8 +30,9 @@ router.post('/register', (req, res) => {
 //Show Login form
 router.get('/login', (req, res) => {
     res.render('login', {
-        referer: req.headers.referer
-    })
+        referer: req.headers.referer, 
+        page: 'login'
+    });
 });
 
 //handle login logic
